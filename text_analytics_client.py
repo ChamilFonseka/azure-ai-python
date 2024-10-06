@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 import os
 from azure.core.credentials import AzureKeyCredential
+from azure.keyvault.secrets import SecretClient
+from azure.identity import ClientSecretCredential
 from azure.ai.textanalytics import (
     TextAnalyticsClient,
     RecognizeEntitiesAction,
@@ -12,25 +14,30 @@ from azure.ai.textanalytics import (
 
 def main():
     global ai_endpoint
-    global ai_key
+    global cog_key
 
     try:
+        # Get Configuration Settings
         load_dotenv()
-        endpoint = os.getenv("AI_SERVICE_ENDPOINT")
-        key = os.getenv("AI_SERVICE_KEY")
+        ai_endpoint = os.getenv('AI_SERVICE_ENDPOINT')        
+        key_vault_name = os.getenv('KEY_VAULT')        
+        app_tenant = os.getenv('TENANT_ID')        
+        app_id = os.getenv('APP_ID')        
+        app_password = os.getenv('APP_PASSWORD')
 
-        client = TextAnalyticsClient(endpoint, AzureKeyCredential(key))
+        # Get Azure AI services key from keyvault using the service principal credentials        
+        key_vault_uri = f"https://{key_vault_name}.vault.azure.net/"        
+        credential = ClientSecretCredential(app_tenant, app_id, app_password)        
+        keyvault_client = SecretClient(key_vault_uri, credential)        
+        secret_key = keyvault_client.get_secret("AI-Services-Key")        
+        cog_key = secret_key.value
+    
+        client = TextAnalyticsClient(endpoint=ai_endpoint, credential=AzureKeyCredential(cog_key))
 
         documents = [
             'We went to Contoso Steakhouse located at midtown NYC last week for a dinner party, and we adore the spot! '
             'They provide marvelous food and they have a great menu. The chief cook happens to be the owner (I think his name is John Doe) '
             'and he is super nice, coming out of the kitchen and greeted us all.'
-            ,
-
-            'We enjoyed very much dining in the place! '
-            'The Sirloin steak I ordered was tender and juicy, and the place was impeccably clean. You can even pre-order from their '
-            'online menu at www.contososteakhouse.com, call 312-555-0176 or send email to order@contososteakhouse.com! '
-            'The only complaint I have is the food didn\'t come fast enough. Overall I highly recommend it!'
         ]
 
         poller = client.begin_analyze_actions(
