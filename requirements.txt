@@ -1,5 +1,6 @@
 python-dotenv
 azure-ai-textanalytics
 azure-ai-vision-imageanalysis
+azure-cognitiveservices-vision-face
 matplotlib
 pillow
