@@ -3,5 +3,6 @@ azure-ai-textanalytics
 azure-ai-vision-imageanalysis
 azure-cognitiveservices-vision-face
 azure-ai-language-questionanswering
+azure-ai-language-conversations
 matplotlib
 pillow
