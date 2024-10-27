@@ -5,5 +5,7 @@ azure-cognitiveservices-vision-face
 azure-ai-language-questionanswering
 azure-ai-language-conversations
 azure-ai-translation-text
+azure-cognitiveservices-speech
 matplotlib
 pillow
+playsound==1.2.2
