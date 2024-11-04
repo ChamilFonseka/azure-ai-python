@@ -6,6 +6,8 @@ azure-ai-language-questionanswering
 azure-ai-language-conversations
 azure-ai-translation-text
 azure-cognitiveservices-speech
+azure-search-documents
 matplotlib
 pillow
 playsound==1.2.2
+Flask
