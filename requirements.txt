@@ -11,3 +11,4 @@ matplotlib
 pillow
 playsound==1.2.2
 Flask
+openai
